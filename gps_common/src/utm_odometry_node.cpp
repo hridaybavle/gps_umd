@@ -24,6 +24,7 @@ bool GlobalToLocal(Position::Pose3D *current)
     static Position::Pose3D map_origin;
     static bool first_pose_received = false;
 
+
     //This is to print the global data in ROS
     ROS_INFO("Global data (%.3f, %.3f, %.3f) (%.3f, %.3f, %.3f)",
     current->x, current->y, current->z,
@@ -78,19 +79,21 @@ void callback(const sensor_msgs::NavSatFixConstPtr& fix) {
   std::string zone;
 
   LLtoUTM(fix->latitude, fix->longitude, northing_double, easting_double, zone);
-  int easting = easting_double;
+
+  int easting  = easting_double;
   int northing = northing_double;
   int altitude = fix->altitude;
 
   if (odom_pub) {
 
-    odom_3d.pos.x = easting;
-    odom_3d.pos.y = northing;
+
+    odom_3d.pos.x = northing;
+    odom_3d.pos.y = easting;
     odom_3d.pos.z = altitude;
 
-    odom_3d.pos.roll = 0;
+    odom_3d.pos.roll  = 0;
     odom_3d.pos.pitch = 0;
-    odom_3d.pos.yaw = 0;
+    odom_3d.pos.yaw   = 0;
 
     ConvertToLocal(&odom_3d.pos);
 
@@ -151,11 +154,10 @@ int main (int argc, char **argv) {
   priv_node.param<std::string>("child_frame_id", child_frame_id, "");
   priv_node.param<double>("rot_covariance", rot_cov, 99999.0);
 
-  odom_pub = node.advertise<nav_msgs::Odometry>("odom", 10);
+  odom_pub = node.advertise<nav_msgs::Odometry>("drone0/odom", 10);
 
   ros::Subscriber fix_sub = node.subscribe("fix", 10, callback);
   
-
   ros::spin();
   loop_rate.sleep();
  
