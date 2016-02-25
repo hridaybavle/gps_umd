@@ -24,6 +24,7 @@ bool GlobalToLocal(Position::Pose3D *current)
     static Position::Pose3D map_origin;
     static bool first_pose_received = false;
 
+    //This is to print the global data in ROS
     ROS_INFO("Global data (%.3f, %.3f, %.3f) (%.3f, %.3f, %.3f)",
     current->x, current->y, current->z,
     current->roll, current->pitch, current->yaw);
